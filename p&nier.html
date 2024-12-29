@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panier d'achat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .panier {
+      width: 400px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .article {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .nom-article {
+      font-weight: bold;
+    }
+
+    .prix-article {
+      color: #28a745;
+    }
+
+    .quantite {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantite button {
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .btn-supprimer, .btn-aimer {
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .btn-aimer {
+      color: #ccc;
+    }
+
+    .btn-aimer.active {
+      color: red;
+    }
+
+    .total {
+      font-weight: bold;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panier">
+    <h1>Votre Panier</h1>
+
+    <div class="article">
+      <div class="info-article">
+        <span class="nom-article">Article 1</span>
+        <span class="prix-article">20 €</span>
+      </div>
+      <div class="quantite">
+        <button class="btn-moins">-</button>
+        <span class="quantite-valeur">1</span>
+        <button class="btn-plus">+</button>
+      </div>
+      <button class="btn-supprimer">Supprimer</button>
+      <button class="btn-aimer">&#9829;</button>
+    </div>
+
+    <div class="article">
+      <div class="info-article">
+        <span class="nom-article">Article 2</span>
+        <span class="prix-article">15 €</span>
+      </div>
+      <div class="quantite">
+        <button class="btn-moins">-</button>
+        <span class="quantite-valeur">1</span>
+        <button class="btn-plus">+</button>
+      </div>
+      <button class="btn-supprimer">Supprimer</button>
+      <button class="btn-aimer">&#9829;</button>
+    </div>
+
+    <div class="total">
+      <span>Total: </span><span id="total-prix">35 €</span>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const articles = document.querySelectorAll(".article");
+      let totalPrix = 0;
+
+      // Calculer le prix total du panier
+      const updateTotalPrice = () => {
+        totalPrix = 0;
+        articles.forEach(article => {
+          const price = parseFloat(article.querySelector(".prix-article").textContent.replace("€", "").trim());
+          const quantity = parseInt(article.querySelector(".quantite-valeur").textContent);
+          totalPrix += price * quantity;
+        });
+        document.getElementById("total-prix").textContent = `${totalPrix} €`;
+      };
+
+      // Gérer l'ajustement de la quantité
+      articles.forEach(article => {
+        const btnPlus = article.querySelector(".btn-plus");
+        const btnMoins = article.querySelector(".btn-moins");
+        const quantityValue = article.querySelector(".quantite-valeur");
+
+        btnPlus.addEventListener("click", () => {
+          quantityValue.textContent = parseInt(quantityValue.textContent) + 1;
+          updateTotalPrice();
+        });
+
+        btnMoins.addEventListener("click", () => {
+          if (parseInt(quantityValue.textContent) > 1) {
+            quantityValue.textContent = parseInt(quantityValue.textContent) - 1;
+            updateTotalPrice();
+          }
+        });
+      });
+
+      // Gérer la suppression d'articles
+      articles.forEach(article => {
+        const btnSupprimer = article.querySelector(".btn-supprimer");
+        btnSupprimer.addEventListener("click", () => {
+          article.remove();
+          updateTotalPrice();
+        });
+      });
+
+      // Gérer le bouton "aimer"
+      articles.forEach(article => {
+        const btnAimer = article.querySelector(".btn-aimer");
+        btnAimer.addEventListener("click", () => {
+          btnAimer.classList.toggle("active");
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
